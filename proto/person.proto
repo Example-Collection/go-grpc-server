@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package proto;
 
+option go_package="github.com/Example-Collection/go-grpc-client/proto";
+
 service PersonService {
   // 사용자 정보 요청, Unary RPC
   rpc GetPersonInformation(PersonRequest) returns (PersonResponse) {}

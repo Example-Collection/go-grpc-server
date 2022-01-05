@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package proto;
+
+service PersonService {
+  // 사용자 정보 요청, Unary RPC
+  rpc GetPersonInformation(PersonRequest) returns (PersonResponse) {}
+
+  // 모든 사용자 정보 요청, Server Streaming RPC
+  rpc ListPersons(ListPersonRequest) returns (stream PersonResponse) {}
+
+  // 다수의 사용자 저장 요청, Client Streaming RPC
+  rpc savePersons(stream PersonRequest) returns (BasicResponse) {}
+
+  // 사용자 정보 실시간 요청, Bidirectional Streaming RPC
+  rpc askAndGetPersons(stream PersonRequest) returns (stream PersonResponse) {}
+}
+
+message PersonRequest {
+  string name = 1;
+  int64 age = 2;
+  string email = 3;
+  string password = 4;
+}
+
+message PersonResponse {
+  string name = 1;
+  int64 age = 2;
+  string email = 3;
+  string message = 4;
+}
+
+message ListPersonRequest {
+  string email = 1;
+}
+
+message BasicResponse {
+  string message = 1;
+}

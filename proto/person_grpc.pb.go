@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PersonServiceClient interface {
-	// 사용자 정보 요청, Unary RPC
+	// 사용자 정보 저장 요청, Unary RPC
 	GetPersonInformation(ctx context.Context, in *PersonRequest, opts ...grpc.CallOption) (*PersonResponse, error)
 	// 모든 사용자 정보 요청, Server Streaming RPC
 	ListPersons(ctx context.Context, in *ListPersonRequest, opts ...grpc.CallOption) (PersonService_ListPersonsClient, error)
@@ -146,7 +146,7 @@ func (x *personServiceAskAndGetPersonsClient) Recv() (*PersonResponse, error) {
 // All implementations must embed UnimplementedPersonServiceServer
 // for forward compatibility
 type PersonServiceServer interface {
-	// 사용자 정보 요청, Unary RPC
+	// 사용자 정보 저장 요청, Unary RPC
 	GetPersonInformation(context.Context, *PersonRequest) (*PersonResponse, error)
 	// 모든 사용자 정보 요청, Server Streaming RPC
 	ListPersons(*ListPersonRequest, PersonService_ListPersonsServer) error

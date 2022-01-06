@@ -6,6 +6,7 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"time"
 )
 
 type personServiceServer struct {
@@ -32,8 +33,47 @@ func (s *personServiceServer) GetPersonInformation(_ context.Context, req *pb.Pe
 	return personRequestToPersonResponse(req), nil
 }
 
+func (s *personServiceServer) ListPersons(req *pb.ListPersonRequest, stream pb.PersonService_ListPersonsServer) error {
+	log.Printf("ListPersonRequest(email: %v) arrived.", req.Email)
+	for _, person := range s.savedPersons {
+		if person.Email == req.Email {
+			time.Sleep(time.Second) // Optional
+			if err := stream.Send(personRequestToPersonResponse(person)); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 func newServer() *personServiceServer {
-	return &personServiceServer{savedPersons: []*pb.PersonRequest{}}
+	savedPersons := []*pb.PersonRequest{
+		{
+			Email:    "robbyra@gmail.com",
+			Age:      25,
+			Name:     "sangwooAged25",
+			Password: "sangwooPassword",
+		},
+		{
+			Email:    "robbyra@gmail.com",
+			Age:      26,
+			Name:     "sangwooAged26",
+			Password: "sangwooPassword",
+		},
+		{
+			Email:    "robbyra@gmail.com",
+			Age:      27,
+			Name:     "sangwooAged27",
+			Password: "sangwooPassword",
+		},
+		{
+			Email:    "notSangwoo@gmail.com",
+			Age:      1,
+			Name:     "notSangwoo",
+			Password: "notSangwooPassword",
+		},
+	}
+	return &personServiceServer{savedPersons: savedPersons}
 }
 
 func main() {

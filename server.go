@@ -64,6 +64,25 @@ func (s *personServiceServer) SavePersons(stream pb.PersonService_SavePersonsSer
 	return nil
 }
 
+func (s *personServiceServer) AskAndGetPersons(stream pb.PersonService_AskAndGetPersonsServer) error {
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			log.Println("Read all messages from client stream. Closing server stream.")
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		log.Printf("PersonRequest(email: %v, name: %v, age: %d) arrived.", req.Email, req.Name, req.Age)
+		s.savedPersons = append(s.savedPersons, req)
+		time.Sleep(time.Second)
+		if err := stream.Send(personRequestToPersonResponse(req)); err != nil {
+			return err
+		}
+	}
+}
+
 func newServer() *personServiceServer {
 	savedPersons := []*pb.PersonRequest{
 		{

@@ -4,6 +4,7 @@ import (
 	"context"
 	pb "github.com/Example-Collection/go-grpc-server/proto"
 	"google.golang.org/grpc"
+	"io"
 	"log"
 	"net"
 	"time"
@@ -42,6 +43,23 @@ func (s *personServiceServer) ListPersons(req *pb.ListPersonRequest, stream pb.P
 				return err
 			}
 		}
+	}
+	return nil
+}
+
+func (s *personServiceServer) SavePersons(stream pb.PersonService_SavePersonsServer) error {
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			log.Println("Read all messages in client stream.\nClosing stream after sending response.")
+			return stream.SendAndClose(&pb.BasicResponse{Message: "All requests saved!"})
+		}
+		if err != nil {
+			log.Fatalf("%v.SavePersons(_) = _, %v", s, err)
+			return err
+		}
+		s.savedPersons = append(s.savedPersons, req)
+		log.Printf("Saved Person(name: %v, email: %v, age: %d).\n", req.Name, req.Email, req.Age)
 	}
 	return nil
 }

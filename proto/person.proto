@@ -2,40 +2,32 @@ syntax = "proto3";
 
 package proto;
 
-option go_package="github.com/Example-Collection/go-grpc-server/proto";
+option go_package="./proto";
 
 service PersonService {
   // 사용자 정보 저장 요청, Unary RPC
-  rpc GetPersonInformation(PersonRequest) returns (PersonResponse) {}
-
-  // 모든 사용자 정보 요청, Server Streaming RPC
-  rpc ListPersons(ListPersonRequest) returns (stream PersonResponse) {}
-
-  // 다수의 사용자 저장 요청, Client Streaming RPC
-  rpc savePersons(stream PersonRequest) returns (BasicResponse) {}
-
-  // 사용자 정보 실시간 요청, Bidirectional Streaming RPC
-  rpc askAndGetPersons(stream PersonRequest) returns (stream PersonResponse) {}
+  rpc GetPersonInformation(GetPersonRequest) returns (GetPersonResponse) {}
+  rpc SavePersonInformation(SavePersonRequest) returns (BasicMessageResponse) {}
 }
 
-message PersonRequest {
-  string name = 1;
-  int64 age = 2;
-  string email = 3;
-  string password = 4;
+message GetPersonRequest {
+  string email = 1;
 }
 
-message PersonResponse {
+message GetPersonResponse {
   string name = 1;
   int64 age = 2;
   string email = 3;
   string message = 4;
 }
 
-message ListPersonRequest {
-  string email = 1;
+message SavePersonRequest {
+  string name = 1;
+  int64 age = 2;
+  string email = 3;
+  string password = 4;
 }
 
-message BasicResponse {
+message BasicMessageResponse {
   string message = 1;
 }
